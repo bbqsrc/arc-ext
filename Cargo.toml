@@ -9,6 +9,3 @@ license = "Apache-2.0 OR MIT"
 
 [dependencies]
 async-graphql = { version = "4.0.16", optional = true }
-
-[features]
-default = ["async-graphql"]

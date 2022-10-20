@@ -1,12 +1,15 @@
-use std::{sync::Arc, pin::Pin};
+use std::{pin::Pin, sync::Arc};
 
 mod arc;
 mod option;
 
+#[cfg(feature = "async-graphql")]
+pub mod graphql;
+
 pub use arc::ArcProject;
 pub use option::ArcProjectOption;
 
-pub trait ArcExt<T>: Unpin
+pub trait ArcExt<T: ?Sized>: Unpin
 where
     T: Unpin,
 {
@@ -25,7 +28,7 @@ where
         F: Fn(&'a Pin<Arc<T>>) -> Option<&'b U>;
 }
 
-impl<T: Unpin> ArcExt<T> for Arc<T> {
+impl<T: ?Sized + Unpin> ArcExt<T> for Arc<T> {
     fn project<'a, 'b, U, F>(self, deref_fn: F) -> ArcProject<'a, 'b, T, U>
     where
         'a: 'b,

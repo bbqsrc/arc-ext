@@ -1,9 +1,4 @@
-use std::{
-    marker::PhantomData,
-    ops::Deref,
-    pin::Pin,
-    sync::Arc,
-};
+use std::{marker::PhantomData, ops::Deref, pin::Pin, sync::Arc};
 
 pub struct ArcProject<'a, 'b, T, U>
 where
@@ -13,6 +8,10 @@ where
     inner: Pin<Arc<T>>,
     _lifetime: PhantomData<&'a &'b ()>,
 }
+
+unsafe impl<T, U> Send for ArcProject<'_, '_, T, U> where T: ?Sized + Unpin {}
+
+unsafe impl<T, U> Sync for ArcProject<'_, '_, T, U> where T: ?Sized + Unpin {}
 
 impl<'a, 'b, T, U> ArcProject<'a, 'b, T, U>
 where
